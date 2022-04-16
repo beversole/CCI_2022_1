@@ -1,0 +1,127 @@
+<!-- /exercises/06-js-array-functions.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Artists, Tour Guides and Tag Alongs</title>
+
+    <style>
+        .panel{ float:left; padding:1em; margin:2em;  border:solid 1px #eeeeee }
+
+    </style>
+
+  </head>
+  <body>
+    <ul id="artist-list"></ul>
+
+    <script>
+
+        let Artists = [];
+        let TourGuides = [];
+        let TagAlongs = [];
+
+        class Artist {
+            constructor(name, site) {
+                this.name = name;
+                this.site = site;
+            }
+            /*
+            // Getter
+            get area() {
+                return this.calcArea();
+            }
+            // Method
+            calcArea() {
+                return this.height * this.width;
+            }
+            */
+        }
+
+        Artists.push(new Artist('Joy','https://grayarea.org/community-entry/joy-ding/'));
+        Artists.push(new Artist('Nathan','https://nathan.design/'));
+        Artists.push(new Artist('Connie',null));
+        Artists.push(new Artist('Hayden','https://haydencarey.com/'));
+        Artists.push(new Artist('Natalie','https://www.natalieabbott.com/'));
+        Artists.push(new Artist('Steph','https://stephmarisa.github.io/'));
+        Artists.push(new Artist('Simren','https://www.instagram.com/inky.bois/'));
+        Artists.push(new Artist('William',null));
+        Artists.push(new Artist('Elizabeth','https://www.elizabethleister.com/'));
+        Artists.push(new Artist('Danishta','http://www.danishtarivero.com/'));
+        Artists.push(new Artist('Clayton','https://www.instagram.com/claytonnorriss'));
+
+        TagAlongs.push(new Artist('Ivan','https://ivanmendozaportfolio.com/'));
+        TagAlongs.push(new Artist('Brandon','https://www.instagram.com/_brandoneversole/'));
+
+        TourGuides.push(new Artist('David','https://dsasson.com/'));
+        TourGuides.push(new Artist('Shawn','https://grayarea.org/community-entry/shawn-jackson/'));
+        TourGuides.push(new Artist('Niki','https://nikiselken.com/'));
+
+        TourGuides.push(new Artist('Alex','https://grayarea.org/community-entry/alexander-abalos/'));
+        TourGuides.push(new Artist('Stephanie','https://www.jellomoat.com/'));
+        TourGuides.push(new Artist('Coley','https://grayarea.org/community-entry/coley-mixan/'));
+        TourGuides.push(new Artist('Stephanie','https://www.jellomoat.com/'));
+        TourGuides.push(new Artist('Marc','https://grayarea.org/community-entry/marc-schroeder-2/'));
+        TourGuides.push(new Artist('Ayse','https://aysenurdemir.com/'));
+        
+        /*
+        // filter
+        let onlyApples = fruits.filter(function(fruit) {
+          return fruit.indexOf("Apple") > -1;
+        });
+
+        fruits.filter(fruit => fruit.indexOf("Apple") > -1);
+
+        console.log(onlyApples);
+        */
+
+        // map
+        let elem = document.getElementById("artist-list");
+
+        let markup = ``;
+
+        markup += '<div class="panel">'
+        markup += '<h1>Artists</h1>'
+        markup += Artists.map(function(artist) {
+          let htm = '';
+          if(artist.site != null){
+            htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
+          }else{
+            htm =  `<li>${ artist.name }</li>`;
+          }
+          return htm
+        }).join('');
+        markup += '</div>'
+
+
+        markup += '<div class="panel">'
+        markup += '<h1>Tour Guides</h1>'
+        markup += TourGuides.map(function(artist) {
+          let htm = '';
+          if(artist.site != null){
+            htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
+          }else{
+            htm =  `<li>${ artist.name }</li>`;
+          }
+          return htm
+        }).join('');
+        markup += '</div>'
+
+        markup += '<div class="panel">'
+        markup += '<h1>Tag Alongs</h1>'
+        markup += TagAlongs.map(function(artist) {
+          let htm = '';
+          if(artist.site != null){
+            htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
+          }else{
+            htm =  `<li>${ artist.name }</li>`;
+          }
+          return htm
+        }).join('');
+        markup += '</div>'
+
+
+        elem.innerHTML = markup;
+
+        // console.log(editedFruits);
+      </script>
+  </body>
+</html>
