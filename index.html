@@ -22,6 +22,8 @@
 <script>
 
 let canvas, ctx;
+let particles = [];
+let bgAnimation;
 
 (function() {
   canvas = document.getElementById('canvas');
@@ -35,7 +37,10 @@ let canvas, ctx;
 
 function imagesReady(){
   renderHtm();
+  initParticles();
+  step();
   drawCanvas();
+  
     window.addEventListener('resize', function(event) {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -43,19 +48,68 @@ function imagesReady(){
   }, true);
 }
 
-function drawCanvas(){
-  let cw = canvas.width;
-  let ch = canvas.height;
-  if(cw>ch){ cw *= ch/cw; }else{ ch *= cw/ch; }
+function randomIntFromInterval(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
 
-  let rowCnt = Math.ceil(canvas.width/cw);
-  let colCnt = Math.ceil(canvas.height/ch);
-
-  for (let i = 0; i < rowCnt; i++) {
-    for (let j = 0; j < colCnt; j++) {
-      ctx.drawImage(GACC.imageFullCohort, i*cw, j*ch, cw, ch);
-    }
+function initParticles(){
+  particles = [];
+  for( let i=5; i--; )
+  {
+    GACC.fullCohort.forEach(element => 
+            {
+                let p = {};
+                p.scale = randomIntFromInterval(window.innerWidth/10, window.innerWidth/5);
+                p.x = - p.scale;
+                p.y = randomIntFromInterval(-p.scale, window.innerHeight+p.scale);
+                p.xVel = randomIntFromInterval(.05, 5);
+                p.yVel = randomIntFromInterval(.05, 5);
+                p.imagePos = element.imagePos;
+                particles.push(p);
+            }
+        );
   }
+
+}
+
+
+function step(){
+  particles.forEach(p => 
+      {
+        let isResetP = false;
+        p.x += p.xVel;
+        p.y += p.yVel;
+        if(p.x > window.innerWidth){isResetP=true}
+        if(p.y > window.innerHeight){isResetP=true}
+
+        if(isResetP){
+          p.scale = randomIntFromInterval(window.innerWidth/10, window.innerWidth/5);
+          p.x = - p.scale;
+          p.y = randomIntFromInterval(-p.scale, window.innerHeight+p.scale);
+          p.xVel = randomIntFromInterval(1, 6);
+          p.yVel = randomIntFromInterval(1, 6);
+        }
+
+      }
+  );
+  drawCanvas();
+  bgAnimation = requestAnimationFrame(step);
+}
+
+
+
+function drawCanvas(){
+
+  particles.forEach(p => 
+      {
+        ctx.drawImage(
+            GACC.imageFullCohort, 
+            0,GACC.iconNativeSize[0]*p.imagePos,
+            GACC.iconNativeSize[0],GACC.iconNativeSize[0],
+            p.x,p.y,
+            p.scale,p.scale);
+      }
+  );
 
 }
 
@@ -65,7 +119,7 @@ function renderHtm(){
 
   markup += '<div class="panel">'
   markup += '<span class="lbl">Artists</span>'
-  markup += GACC.Artists.map(function(artist) {
+  markup += GACC.artists.map(function(artist) {
   let htm = '';
   if(artist.site != null){
     htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
@@ -78,7 +132,7 @@ function renderHtm(){
 
   markup += '<div class="panel">'
   markup += '<span class="lbl">Tour Guides</span>'
-  markup += GACC.TourGuides.map(function(artist) {
+  markup += GACC.tourGuides.map(function(artist) {
   let htm = '';
   if(artist.site != null){
     htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
@@ -91,7 +145,7 @@ function renderHtm(){
 
   markup += '<div class="panel">'
   markup += '<span class="lbl">Tag Alongs</span>'
-  markup += GACC.TagAlongs.map(function(artist) {
+  markup += GACC.tagAlongs.map(function(artist) {
   let htm = '';
   if(artist.site != null){
     htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
