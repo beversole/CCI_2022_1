@@ -3,125 +3,123 @@
 <html>
   <head>
     <title>Artists, Tour Guides and Tag Alongs</title>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Roboto&display=swap" rel="stylesheet">
     <style>
-        .panel{ float:left; padding:1em; margin:2em;  border:solid 1px #eeeeee }
-
+        .panel{ float:left; border-radius: 1.5em; padding:1.5em; margin:1.5em; font-size:1.5em; width:em; background-color:#ffffff;  border:solid 1px #eeeeee; font-family: 'Roboto', sans-serif;}
+        .lbl{ font-size:2em; display: block; margin-bottom: .25em; font-family: 'Playfair Display', serif; }
+        #canvas { position:fixed; left:0; top:0; }
     </style>
 
+
+    <script src="GACC.js"></script>
   </head>
   <body>
-    <ul id="artist-list"></ul>
 
-    <script>
+  <canvas id="canvas" width="1740" height="2175" style="display:block;z-index:100"></canvas>
+  <div style="z-index:200;position: relative" id="artist-list"></div>
+<script>
 
-        let Artists = [];
-        let TourGuides = [];
-        let TagAlongs = [];
+let canvas, ctx;
 
-        class Artist {
-            constructor(name, site) {
-                this.name = name;
-                this.site = site;
-            }
-            /*
-            // Getter
-            get area() {
-                return this.calcArea();
-            }
-            // Method
-            calcArea() {
-                return this.height * this.width;
-            }
-            */
-        }
+(function() {
+  canvas = document.getElementById('canvas');
+  ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-        Artists.push(new Artist('Joy','https://grayarea.org/community-entry/joy-ding/'));
-        Artists.push(new Artist('Nathan','https://nathan.design/'));
-        Artists.push(new Artist('Connie',null));
-        Artists.push(new Artist('Hayden','https://haydencarey.com/'));
-        Artists.push(new Artist('Natalie','https://www.natalieabbott.com/'));
-        Artists.push(new Artist('Steph','https://stephmarisa.github.io/'));
-        Artists.push(new Artist('Simren','https://www.instagram.com/inky.bois/'));
-        Artists.push(new Artist('William',null));
-        Artists.push(new Artist('Elizabeth','https://www.elizabethleister.com/'));
-        Artists.push(new Artist('Danishta','http://www.danishtarivero.com/'));
-        Artists.push(new Artist('Clayton','https://www.instagram.com/claytonnorriss'));
-
-        TagAlongs.push(new Artist('Ivan','https://ivanmendozaportfolio.com/'));
-        TagAlongs.push(new Artist('Brandon','https://www.instagram.com/_brandoneversole/'));
-
-        TourGuides.push(new Artist('David','https://dsasson.com/'));
-        TourGuides.push(new Artist('Shawn','https://grayarea.org/community-entry/shawn-jackson/'));
-        TourGuides.push(new Artist('Niki','https://nikiselken.com/'));
-
-        TourGuides.push(new Artist('Alex','https://grayarea.org/community-entry/alexander-abalos/'));
-        TourGuides.push(new Artist('Stephanie','https://www.jellomoat.com/'));
-        TourGuides.push(new Artist('Coley','https://grayarea.org/community-entry/coley-mixan/'));
-        TourGuides.push(new Artist('Stephanie','https://www.jellomoat.com/'));
-        TourGuides.push(new Artist('Marc','https://grayarea.org/community-entry/marc-schroeder-2/'));
-        TourGuides.push(new Artist('Ayse','https://aysenurdemir.com/'));
-        
-        /*
-        // filter
-        let onlyApples = fruits.filter(function(fruit) {
-          return fruit.indexOf("Apple") > -1;
-        });
-
-        fruits.filter(fruit => fruit.indexOf("Apple") > -1);
-
-        console.log(onlyApples);
-        */
-
-        // map
-        let elem = document.getElementById("artist-list");
-
-        let markup = ``;
-
-        markup += '<div class="panel">'
-        markup += '<h1>Artists</h1>'
-        markup += Artists.map(function(artist) {
-          let htm = '';
-          if(artist.site != null){
-            htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
-          }else{
-            htm =  `<li>${ artist.name }</li>`;
-          }
-          return htm
-        }).join('');
-        markup += '</div>'
+  GACC.loadImages(imagesReady);
+})();
 
 
-        markup += '<div class="panel">'
-        markup += '<h1>Tour Guides</h1>'
-        markup += TourGuides.map(function(artist) {
-          let htm = '';
-          if(artist.site != null){
-            htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
-          }else{
-            htm =  `<li>${ artist.name }</li>`;
-          }
-          return htm
-        }).join('');
-        markup += '</div>'
-
-        markup += '<div class="panel">'
-        markup += '<h1>Tag Alongs</h1>'
-        markup += TagAlongs.map(function(artist) {
-          let htm = '';
-          if(artist.site != null){
-            htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
-          }else{
-            htm =  `<li>${ artist.name }</li>`;
-          }
-          return htm
-        }).join('');
-        markup += '</div>'
 
 
-        elem.innerHTML = markup;
+function imagesReady(){
+  renderHtm();
+  drawCanvas();
+    window.addEventListener('resize', function(event) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      drawCanvas();
+  }, true);
+}
 
-        // console.log(editedFruits);
-      </script>
+
+
+function drawCanvas(){
+  let cw = canvas.width;
+  let ch = canvas.height;
+  if(cw>ch){ cw *= ch/cw; }else{ ch *= cw/ch; }
+
+  let rowCnt = Math.ceil(canvas.width/cw);
+  let colCnt = Math.ceil(canvas.height/ch);
+
+  for (let i = 0; i < rowCnt; i++) {
+    for (let j = 0; j < colCnt; j++) {
+      ctx.drawImage(GACC.imageFullCohort, i*cw, j*ch, cw, ch);
+    }
+  }
+
+  
+}
+
+function renderHtm(){
+  let elem = document.getElementById("artist-list");
+  let markup = ``;
+
+  markup += '<div class="panel">'
+  markup += '<span class="lbl">Artists</span>'
+  markup += GACC.Artists.map(function(artist) {
+  let htm = '';
+  if(artist.site != null){
+    htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
+  }else{
+    htm =  `<li>${ artist.name }</li>`;
+  }
+  return htm
+  }).join('');
+  markup += '</div>'
+
+
+  markup += '<div class="panel">'
+  markup += '<span class="lbl">Tour Guides</span>'
+  markup += GACC.TourGuides.map(function(artist) {
+  let htm = '';
+  if(artist.site != null){
+    htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
+  }else{
+    htm =  `<li>${ artist.name }</li>`;
+  }
+  return htm
+  }).join('');
+  markup += '</div>'
+
+  markup += '<div class="panel">'
+  markup += '<span class="lbl">Tag Alongs</span>'
+  markup += GACC.TagAlongs.map(function(artist) {
+  let htm = '';
+  if(artist.site != null){
+    htm = `<li><a target="_blank" href="${ artist.site }" >${ artist.name }</a></li>`;
+  }else{
+    htm =  `<li>${ artist.name }</li>`;
+  }
+  return htm
+  }).join('');
+  markup += '</div>'
+
+
+  elem.innerHTML = markup;
+}
+  
+
+  
+  //const image = document.getElementById('source');
+  //image.addEventListener('load', e => {
+  //  ctx.drawImage(image, 0, 0);
+  //});
+  // console.log(editedFruits);
+</script>
+
   </body>
 </html>
