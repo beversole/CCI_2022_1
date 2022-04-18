@@ -45,8 +45,3 @@ GACC.TourGuides.push(new GACC_Artist('Coley','https://grayarea.org/community-ent
 GACC.TourGuides.push(new GACC_Artist('Stephanie','https://www.jellomoat.com/'));
 GACC.TourGuides.push(new GACC_Artist('Marc','https://grayarea.org/community-entry/marc-schroeder-2/'));
 GACC.TourGuides.push(new GACC_Artist('Ayse','https://aysenurdemir.com/'));
-
-//Start loading image 
-/*
-
-*/
