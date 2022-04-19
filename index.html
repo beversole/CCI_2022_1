@@ -62,18 +62,18 @@ function randomIntFromInterval(min, max) {
 function initParticles(){
   particles = [];
   particles.letLastZIndex = 0;
-  for( let i=5; i--; )
+  for( let i=2; i--; )
   {
     GACC.fullCohort.forEach(element => 
             {
                 let p = {};
                 p.scale = randomIntFromInterval(window.innerWidth/10, window.innerWidth/5);
                 p.x = randomIntFromInterval(0.0, window.innerWidth);
-                p.y = window.innerHeight-p.scale;
+                p.y = randomIntFromInterval(0.0, window.innerHeight);
                 p.xVel = randomIntFromInterval(.0, .0);
                 p.yVel = randomIntFromInterval(-.05, -5);
                 p.rot = 0.0;
-                p.rotVel = randomIntFromInterval(.0, .01);
+                p.rotVel = randomIntFromInterval(.0, .0);
                 p.imagePos = element.imagePos;
                 p.zIndex = particles.letLastZIndex;
                 particles.letLastZIndex++;
@@ -81,7 +81,6 @@ function initParticles(){
             }
         );
   }
-
 }
 
 function step(){
@@ -103,7 +102,7 @@ function step(){
           p.xVel = randomIntFromInterval(.0, .0);
           p.yVel = randomIntFromInterval(-.01, -5);
           //p.rot = 0.0;
-          p.rotVel = randomIntFromInterval(.0, .01);
+          p.rotVel = randomIntFromInterval(.0, 1.);
           p.zIndex = particles.letLastZIndex;
           particles.letLastZIndex++;
         }

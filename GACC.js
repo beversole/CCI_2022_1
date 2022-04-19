@@ -21,14 +21,6 @@ GACC.loadImages = function(callBack){
     GACC.imageFullCohort = document.createElement("img");
     GACC.imageFullCohort.style.cssText = 'display:none;';
     GACC.imageFullCohort.addEventListener('load', e => { 
-        GACC.fullCohort.forEach(element => 
-            {
-            element.imgCanvas = document.body.appendChild(document.createElement("canvas"));
-            element.imgCanvas.style.cssText = 'display:none;';
-            element.imgCanvas.width = GACC.iconNativeSize[0];
-            element.imgCanvas.height = GACC.iconNativeSize[1];
-            }
-        );
         callBack(); 
     });
     GACC.imageFullCohort.src = "https://github.com/beversole/tags-CCI-2022-1/raw/main/fullCohort.jpg";
