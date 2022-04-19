@@ -34,16 +34,23 @@ let bgAnimation;
   GACC.loadImages(imagesReady);
 })();
 
+function drawBgBg(){
+  ctx.fillStyle = '#303030';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
 
 function imagesReady(){
   renderHtm();
   initParticles();
   step();
+
+  drawBgBg();
   drawCanvas();
   
     window.addEventListener('resize', function(event) {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      drawBgBg();
       drawCanvas();
   }, true);
 }
@@ -54,17 +61,22 @@ function randomIntFromInterval(min, max) {
 
 function initParticles(){
   particles = [];
+  particles.letLastZIndex = 0;
   for( let i=5; i--; )
   {
     GACC.fullCohort.forEach(element => 
             {
                 let p = {};
                 p.scale = randomIntFromInterval(window.innerWidth/10, window.innerWidth/5);
-                p.x = - p.scale;
-                p.y = randomIntFromInterval(-p.scale, window.innerHeight+p.scale);
-                p.xVel = randomIntFromInterval(.05, 5);
-                p.yVel = randomIntFromInterval(.05, 5);
+                p.x = randomIntFromInterval(0.0, window.innerWidth);
+                p.y = window.innerHeight-p.scale;
+                p.xVel = randomIntFromInterval(.0, .0);
+                p.yVel = randomIntFromInterval(-.05, -5);
+                p.rot = 0.0;
+                p.rotVel = randomIntFromInterval(.0, .01);
                 p.imagePos = element.imagePos;
+                p.zIndex = particles.letLastZIndex;
+                particles.letLastZIndex++;
                 particles.push(p);
             }
         );
@@ -72,43 +84,65 @@ function initParticles(){
 
 }
 
-
 function step(){
   particles.forEach(p => 
       {
         let isResetP = false;
         p.x += p.xVel;
         p.y += p.yVel;
-        if(p.x > window.innerWidth){isResetP=true}
-        if(p.y > window.innerHeight){isResetP=true}
+
+        p.rot += p.rotVel;
+
+        //if(p.x > window.innerWidth){isResetP=true}
+        if(p.y <  -p.scale){isResetP=true}
 
         if(isResetP){
           p.scale = randomIntFromInterval(window.innerWidth/10, window.innerWidth/5);
-          p.x = - p.scale;
-          p.y = randomIntFromInterval(-p.scale, window.innerHeight+p.scale);
-          p.xVel = randomIntFromInterval(1, 6);
-          p.yVel = randomIntFromInterval(1, 6);
+          p.x = randomIntFromInterval(0.0, window.innerWidth);
+          p.y = window.innerHeight+p.scale;
+          p.xVel = randomIntFromInterval(.0, .0);
+          p.yVel = randomIntFromInterval(-.01, -5);
+          //p.rot = 0.0;
+          p.rotVel = randomIntFromInterval(.0, .01);
+          p.zIndex = particles.letLastZIndex;
+          particles.letLastZIndex++;
         }
 
       }
   );
   drawCanvas();
-  bgAnimation = requestAnimationFrame(step);
+  bgAnimation = setTimeout(requestAnimationFrame(step),1000/60);
 }
 
 
 
 function drawCanvas(){
 
+  letRotAng = 20.;
+
+  particles.sort(function(a, b){return a.zIndex-b.zIndex});
   particles.forEach(p => 
       {
+        ctx.save();
+        ctx.translate(p.x,p.y); // First translate the context to the center you wish to rotate around.
+        ctx.rotate( p.rot*Math.PI/180 ); // Then do the actual rotation.
+        
         ctx.drawImage(
-            GACC.imageFullCohort, 
-            0,GACC.iconNativeSize[0]*p.imagePos,
-            GACC.iconNativeSize[0],GACC.iconNativeSize[0],
-            p.x,p.y,
-            p.scale,p.scale);
+          GACC.imageFullCohort, 
+          0,GACC.iconNativeSize[0]*p.imagePos,
+          GACC.iconNativeSize[0],GACC.iconNativeSize[0],
+          p.x,p.y,
+          p.scale,p.scale
+        );
+
+        ctx.translate(-p.x,-p.y); // Then translate the context back.
+        ctx.rotate( -letRotAng*Math.PI/180 ); // Then do the actual rotation.
+        ctx.restore();
       }
+
+
+
+
   );
 
 }
