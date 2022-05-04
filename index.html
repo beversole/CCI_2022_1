@@ -8,8 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Roboto&display=swap" rel="stylesheet">
     <style>
         .panel{ float:left; border-radius: 1.5em; padding:1.5em; margin:1.5em; font-size:1.5em; background-color:#ffffff;  border:solid 1px #eeeeee; font-family: 'Roboto', sans-serif;}
-        .lbl{ font-size:2em; display: block; margin-bottom: .25em; font-family: 'Playfair Display', serif; }
-        #canvas { position:fixed; left:0; top:0; }
+        .lbl{ font-size:1.5em; display: block; margin-bottom: .25em; font-family: 'Playfair Display', serif; }
+        .pastDt{font-size:.65em; padding:.5em; color:#cccccc; text-align: center; }
+        .futureDt{font-size:.65em; padding:.5em; text-align: center;}
+        .todayDt{font-size:.65em; padding:.5em; text-align: center;}
+        #canvas { position:fixed; left:0; top:0; text-align: center;}
+        
     </style>
 
 
@@ -146,9 +150,40 @@ function drawCanvas(){
 
 }
 
+let today = new Date();
+today.setHours(0,0,0,0);
+
 function renderHtm(){
   let elem = document.getElementById("artist-list");
   let markup = ``;
+
+
+  let weekNum = 1;
+  markup += '<div class="panel">'
+  markup += '<span class="lbl">Tours</span>'
+  markup += '<table border=0>';
+  markup += '<tr><th style="color:#666666; font-weight:normal;font-size:.65em;padding:1em;">Week</th><th style="text-align:left">Attraction</th><th>Tour Guide</th><th>Day 1</th><th>Day 2</th><th>Day 3</th></tr>';
+  markup += GACC.tours.map(function(tour) {
+  let htm = '';
+  let artist = tour.tourGuide[0];
+  htm += '<tr>';
+  htm += '<td style="text-align:center">' + weekNum + '</td>'
+  htm +=  `<td>${ tour.name }</td>`;
+  if(artist.site != null){
+    htm += `<td><a target="_blank" href="${ artist.site }" >${ artist.name }</a></td>`;
+  }else{
+    htm +=  `<td>${ artist.name }</td>`;
+  }
+  tour.dates.forEach(tourDate =>
+    htm += formatTourDate(tourDate)
+  );
+  htm += '</tr>';
+  weekNum++;
+  return htm
+
+  }).join('');
+  markup += '</table>';
+  markup += '</div>'
 
   markup += '<div class="panel">'
   markup += '<span class="lbl">Artists</span>'
@@ -161,9 +196,9 @@ function renderHtm(){
   }
   return htm
   }).join('');
-  markup += '</div>'
 
-  markup += '<div class="panel">'
+  markup += '<hr>'
+
   markup += '<span class="lbl">Tour Guides</span>'
   markup += GACC.tourGuides.map(function(artist) {
   let htm = '';
@@ -174,9 +209,9 @@ function renderHtm(){
   }
   return htm
   }).join('');
-  markup += '</div>'
 
-  markup += '<div class="panel">'
+  markup += '<hr>'
+
   markup += '<span class="lbl">Tag Alongs</span>'
   markup += GACC.tagAlongs.map(function(artist) {
   let htm = '';
@@ -187,9 +222,36 @@ function renderHtm(){
   }
   return htm
   }).join('');
+
   markup += '</div>'
 
+
+
   elem.innerHTML = markup;
+}
+
+function formatTourDate(tourDate){
+  let htm ='';
+  let tourState = 'future'
+  
+  tourDate.setHours(0,0,0,0);
+  if(tourDate<today){ tourState='past' }
+  if(tourDate==today){ tourState='today' }
+
+  switch (tourState) {
+  case 'future':
+    htm = '<td class="futureDt">' + tourDate.formatMMDDYYYY() + '</td>'
+    break;
+  case 'past':
+    htm = '<td class="pastDt">&#10004; ' + tourDate.formatMMDDYYYY() + '</td>'
+    break;
+  case 'today':
+    htm = '<td class="todayDt">' + tourDate.formatMMDDYYYY() + '</td>'
+    break;
+
+}
+
+  return htm;
 }
 
 </script>
