@@ -236,7 +236,7 @@ function formatTourDate(tourDate){
   
   tourDate.setHours(0,0,0,0);
   if(tourDate<today){ tourState='past' }
-  if(tourDate==today){ tourState='today' }
+  if(tourDate.formatMMDDYYYY()==today.formatMMDDYYYY()){ tourState='today' }
 
   switch (tourState) {
   case 'future':
