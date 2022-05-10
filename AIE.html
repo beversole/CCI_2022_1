@@ -125,12 +125,7 @@
     mySource = document.getElementById('my-source');
     myLbl = document.getElementById('divPromptLbl');
 
-    myPrompt = GAVQGAN.prompts[GAVQGAN.prompts.length-1];
-    myLbl.innerHTML = myPrompt.prompt;
-
-    mySource.src = myPrompt.vidSrc;
-    myAudio.load();
-    myAudio.play();
+    loadRandomVideo();
 
     myAudio.addEventListener('progress', function() {
     var duration =  myAudio.duration;
