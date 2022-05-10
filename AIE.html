@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>AI Eavesdropper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Roboto&display=swap" rel="stylesheet">
+
+<style>
+
+    #c{ padding: 20px; min-width:400px; list-style: none; margin: 0; position: absolute;top: 50%; left:50%; transform: translateY(-50%) translateX(-50%);}
+    #divPromptLbl{font-size:2.75em;color:#ffffff; font-family: 'Roboto', sans-serif;text-shadow: 2px 2px 4px #000000;}
+
+    html { 
+    background: url(vqganBG.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    }
+
+    .buffered {
+    height: 20px;
+    position: relative;
+    background: #555;
+    width: 300px;
+    }
+
+    #buffered-amount {
+    display: block;
+    height: 100%;
+    background-color: #777;
+    width: 0;
+    }
+
+    .progress {
+    margin-top: -20px;
+    height: 20px;
+    position: relative;
+    width: 300px;
+    }
+
+    #progress-amount {
+    display: block;
+    height: 100%;
+    background-color: #595;
+    width: 0;
+    }
+
+
+    @media (orientation: landscape) {
+        #my-audio{width:75vh;height:75vh;}
+    }
+
+    @media (orientation: portrait) {
+        #my-audio{width:75vw;height:75vw;}
+    }
+
+</style>
+
+
+
+</head>
+<body>
+
+    
+
+    <div id="c">
+    <div id="divPromptLbl"></div>
+
+    <video id="my-audio" muted="muted">
+    <source id="my-source"  type="audio/mpeg">
+    </video>
+
+    <div style="display:none;" class="buffered">
+    <span id="buffered-amount"></span>
+    </div>
+    <div style="display:none;" class="progress">
+    <span id="progress-amount"></span>
+    </div>
+    </div>
+
+</body>
+
+
+<script>
+
+    let GAVQGAN = {}
+    GAVQGAN.prompts = [];
+    
+    class GAVQGAN_prompt {
+            constructor(prompt, vidSrc) {
+            this.prompt = prompt;
+            this.vidSrc = vidSrc;
+        }
+    }
+
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('A Space In Element','https://player.vimeo.com/progressive_redirect/playback/708016891/rendition/360p/file.mp4?loc=external&signature=cf6ef7b3f178419f03521f337fd80cd4492ab5dc6e79f119fa2dc40a59351334'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Beautiful Confident Shiba','https://player.vimeo.com/progressive_redirect/playback/708017593/rendition/360p/file.mp4?loc=external&signature=ed52941d9dd6cc3e19269162149722e27c2360b84f8440ae8916a2df2ded490a'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Breakup Rooms','https://player.vimeo.com/progressive_redirect/playback/708017987/rendition/360p/file.mp4?loc=external&signature=1f0b4fd388b9d9e9de71f3e7423d34a1f747d468fe8ce2b652189f3d58159553'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Clay Cat','https://player.vimeo.com/progressive_redirect/playback/708018330/rendition/360p/file.mp4?loc=external&signature=44b641782c781bb37a7eb10a4ed67677688ac480d2d1639aeaaac4b4ac5b8d47'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Facades For Humans','https://player.vimeo.com/progressive_redirect/playback/708019634/rendition/360p/file.mp4?loc=external&signature=2bbd1f2033abb072b9267e6b754d3a20c4381498cf780edee9a5762d2ec35e9a'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('I\'m Gitbub','https://player.vimeo.com/progressive_redirect/playback/708019668/rendition/360p/file.mp4?loc=external&signature=9add4911dcb0c31225ad856de09c6931cdd2fd4743b0e6addde881e0b4c1a423'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Love Birdsong','https://player.vimeo.com/progressive_redirect/playback/708019702/rendition/360p/file.mp4?loc=external&signature=448545cae0dff3a937350605e568c355c0aea4076a69282378c7b64c3b27ac0e'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('To LIVE In An Old Power Station','https://player.vimeo.com/progressive_redirect/playback/708019725/rendition/360p/file.mp4?loc=external&signature=48daa599a8d3d92d1972ab44e0a6a0379c95e9148f20f15bd738439b8ee5374e'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Code Live Atom','https://player.vimeo.com/progressive_redirect/playback/708019758/rendition/360p/file.mp4?loc=external&signature=eff67b2ef997898aa0a354b656b1afc54d97e89acc8afd78fc446cf4876c5900'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('A Husky Ran Into My House','https://player.vimeo.com/progressive_redirect/playback/708029704/rendition/360p/file.mp4?loc=external&signature=a21b46d1d97ed0948847a19d6700354a6203417beda807432106c9ca73c5d74d'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('A Lonely Lobster In The Sky','https://player.vimeo.com/progressive_redirect/playback/708029749/rendition/360p/file.mp4?loc=external&signature=c570a2a9590e92d16b6e357b26128aaf4285c70a01521d4a7613fbf7d61ee57d'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Contact Mics In A Jar Of Dish Soap','https://player.vimeo.com/progressive_redirect/playback/708029781/rendition/360p/file.mp4?loc=external&signature=cbeb1558a61e2686eedff5ea037f39022836a816b566bb743e9c19a319864aa7'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Flower Overpopulation','https://player.vimeo.com/progressive_redirect/playback/708029830/rendition/360p/file.mp4?loc=external&signature=1e2ca923aa38d816551edf2866aaba76c35dbecfe5510b0825780c26c92bb7b7'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('I Dont Know What Is Happening','https://player.vimeo.com/progressive_redirect/playback/708029857/rendition/360p/file.mp4?loc=external&signature=f154ef2ad0d9556e4a8cac987fa36897e61a1934227b072bf46dd74340e5d602'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Let The Words Do As They Will','https://player.vimeo.com/progressive_redirect/playback/708029896/rendition/360p/file.mp4?loc=external&signature=a64173df982d364a98d4ff433105a934bf49e551c7dc97bc15ced240aa884e72'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Love Spotlight Effect','https://player.vimeo.com/progressive_redirect/playback/708029937/rendition/360p/file.mp4?loc=external&signature=264c41b755a59de174360179341b18756d4a4a3e1062a544adcc7e01b63ece8d'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('No Demons In This House','https://player.vimeo.com/progressive_redirect/playback/708029989/rendition/360p/file.mp4?loc=external&signature=7ae897123156ecbefe7fb2b23f75adabe68405ba820220b0ff84330c4f72c0b9'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Sheltering From A Tornado','https://player.vimeo.com/progressive_redirect/playback/708030031/rendition/360p/file.mp4?loc=external&signature=baef8ff6d6b20c9a2af824deaccaba4be1e62652aadf2866431d55dea249a3ac'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Stuck In Food Somewhere','https://player.vimeo.com/progressive_redirect/playback/708030073/rendition/360p/file.mp4?loc=external&signature=1a6ebcde80aeb6dc15c7d3f874a3a749da952c0b127e2197a259806d2e4969de'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('Thumbs Up Blue Box','https://player.vimeo.com/progressive_redirect/playback/708030130/rendition/360p/file.mp4?loc=external&signature=ef73e945a8d7b97471a315b40a3e9153364277c402f5ca49aa01cbe967b88feb'));
+    GAVQGAN.prompts.push(new GAVQGAN_prompt('What Happens When People Visit','https://player.vimeo.com/progressive_redirect/playback/708030162/rendition/360p/file.mp4?loc=external&signature=3f0d90e4c2aa5c06ceade6b3f54a948bb8e64095565121abd1a05fe35513a7bb'));
+
+    var myAudio;
+    window.onload = function(){
+
+    myAudio = document.getElementById('my-audio');
+    mySource = document.getElementById('my-source');
+    myLbl = document.getElementById('divPromptLbl');
+
+    myPrompt = GAVQGAN.prompts[GAVQGAN.prompts.length-1];
+    myLbl.innerHTML = myPrompt.prompt;
+
+    mySource.src = myPrompt.vidSrc;
+    myAudio.load();
+    myAudio.play();
+
+    myAudio.addEventListener('progress', function() {
+    var duration =  myAudio.duration;
+    if (duration > 0) {
+        for (var i = 0; i < myAudio.buffered.length; i++) {
+            if (myAudio.buffered.start(myAudio.buffered.length - 1 - i) < myAudio.currentTime) {
+                document.getElementById("buffered-amount").style.width = (myAudio.buffered.end(myAudio.buffered.length - 1 - i) / duration) * 100 + "%";
+                break;
+            }
+        }
+    }
+    });
+
+    myAudio.addEventListener('ended',function() {
+        loadRandomVideo();
+    });
+
+    myAudio.addEventListener('timeupdate', function() {
+    var duration =  myAudio.duration;
+    if (duration > 0) {
+        document.getElementById('progress-amount').style.width = ((myAudio.currentTime / duration)*100) + "%";
+    }
+    });
+
+    myAudio.play()
+
+    }
+
+    function loadRandomVideo(){
+        myAudio = document.getElementById('my-audio');
+        mySource = document.getElementById('my-source');
+        myLbl = document.getElementById('divPromptLbl');
+
+        myPrompt = GAVQGAN.prompts[getRandomInt(GAVQGAN.prompts.length)];
+        myLbl.innerHTML = myPrompt.prompt;
+
+        mySource.src = myPrompt.vidSrc;
+        myAudio.load();
+        myAudio.play();
+    }
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+</script>
+
+</html>
