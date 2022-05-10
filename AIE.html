@@ -11,7 +11,7 @@
 
     #c{ padding: 20px; min-width:400px; list-style: none; margin: 0; position: absolute;top: 50%; left:50%; transform: translateY(-50%) translateX(-50%);}
     #divPromptLbl{font-size:2.75em;color:#ffffff; font-family: 'Roboto', sans-serif;text-shadow: 2px 2px 4px #000000;}
-
+    #divFullList{font-size:2.75em;color:#ffffff; font-family: 'Roboto', sans-serif;text-shadow: 2px 2px 4px #000000;}
     html { 
     background: url(vqganBG.jpg) no-repeat center center fixed; 
     -webkit-background-size: cover;
@@ -68,17 +68,12 @@
 
     <div id="c">
     <div id="divPromptLbl"></div>
+    <div id="divFullList">asdfasdf</div>
 
     <video id="my-audio" muted="muted playsinline">
     <source id="my-source"  type="audio/mpeg">
     </video>
 
-    <div style="display:none;" class="buffered">
-    <span id="buffered-amount"></span>
-    </div>
-    <div style="display:none;" class="progress">
-    <span id="progress-amount"></span>
-    </div>
     </div>
 
 </body>
@@ -118,48 +113,56 @@
     GAVQGAN.prompts.push(new GAVQGAN_prompt('Thumbs Up Blue Box','https://player.vimeo.com/progressive_redirect/playback/708030130/rendition/360p/file.mp4?loc=external&signature=ef73e945a8d7b97471a315b40a3e9153364277c402f5ca49aa01cbe967b88feb'));
     GAVQGAN.prompts.push(new GAVQGAN_prompt('What Happens When People Visit','https://player.vimeo.com/progressive_redirect/playback/708030162/rendition/360p/file.mp4?loc=external&signature=3f0d90e4c2aa5c06ceade6b3f54a948bb8e64095565121abd1a05fe35513a7bb'));
 
+    GAVQGAN.prompts.sort((a,b) => (a.prompt > b.prompt) ? 1 : ((b.name > a.name) ? -1 : 0));
+
     var myAudio;
     window.onload = function(){
 
     myAudio = document.getElementById('my-audio');
     mySource = document.getElementById('my-source');
     myLbl = document.getElementById('divPromptLbl');
+    fullList = document.getElementById('divFullList');
 
-    loadRandomVideo();
+    fullList.innerHTML = renderFullList();
 
-    myAudio.addEventListener('progress', function() {
-    var duration =  myAudio.duration;
-    if (duration > 0) {
-        for (var i = 0; i < myAudio.buffered.length; i++) {
-            if (myAudio.buffered.start(myAudio.buffered.length - 1 - i) < myAudio.currentTime) {
-                document.getElementById("buffered-amount").style.width = (myAudio.buffered.end(myAudio.buffered.length - 1 - i) / duration) * 100 + "%";
-                break;
-            }
-        }
-    }
-    });
+    loadNextVideo();
 
     myAudio.addEventListener('ended',function() {
-        loadRandomVideo();
-    });
-
-    myAudio.addEventListener('timeupdate', function() {
-    var duration =  myAudio.duration;
-    if (duration > 0) {
-        document.getElementById('progress-amount').style.width = ((myAudio.currentTime / duration)*100) + "%";
-    }
+        loadNextVideo();
     });
 
     myAudio.play()
 
+
+
     }
 
-    function loadRandomVideo(){
+    let isRandom = true;
+    let selIndex = 0;
+
+    function selPrompts_changed(){
+        var ddl = document.getElementById("selPrompts");
+        if(ddl.value=='-1'){
+            isRandom = true;
+            loadNextVideo();
+        }else{
+            isRandom = false;
+            selIndex = ddl.value;
+            loadNextVideo();
+        }
+    }
+
+    function loadNextVideo(){
         myAudio = document.getElementById('my-audio');
         mySource = document.getElementById('my-source');
         myLbl = document.getElementById('divPromptLbl');
 
-        myPrompt = GAVQGAN.prompts[getRandomInt(GAVQGAN.prompts.length)];
+        if(isRandom==true){
+            myPrompt = GAVQGAN.prompts[getRandomInt(GAVQGAN.prompts.length)];
+        }else{
+            myPrompt = GAVQGAN.prompts[selIndex];
+        }
+
         myLbl.innerHTML = myPrompt.prompt;
 
         mySource.src = myPrompt.vidSrc;
@@ -169,6 +172,20 @@
 
     function getRandomInt(max) {
         return Math.floor(Math.random() * max);
+    }
+
+    function renderFullList(){
+        let curIndex = 0;
+        let markup = '';
+        markup += '<select id="selPrompts" onchange="selPrompts_changed()">'
+        markup += '<option value="-1">-- All Prompts --</option>'
+        markup += GAVQGAN.prompts.map(function(prompt) {
+            let htm = `<option value="${ curIndex }">${ prompt.prompt }</option>`;
+            curIndex++;
+            return htm
+        }).join('');
+        markup += '</select>';
+        return markup
     }
 
 </script>
