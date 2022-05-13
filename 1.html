@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="playOnClick.js"></script>
+    <title>Beginning</title>
+</head>
+<body>
+    <a-scene>
+
+        <a-assets>
+            <video id="No_Demons_In_This_House" autoplay loop="true" src="https://player.vimeo.com/progressive_redirect/playback/708029989/rendition/360p/file.mp4?loc=external&signature=7ae897123156ecbefe7fb2b23f75adabe68405ba820220b0ff84330c4f72c0b9"></video>
+            <video id="Sheltering_From_A_Tornado" autoplay loop="true" src="https://player.vimeo.com/progressive_redirect/playback/708030031/rendition/360p/file.mp4?loc=external&signature=baef8ff6d6b20c9a2af824deaccaba4be1e62652aadf2866431d55dea249a3ac"></video>
+            <video id="Stuck_In_Food_Somewhere" autoplay loop="true" src="https://player.vimeo.com/progressive_redirect/playback/708030073/rendition/360p/file.mp4?loc=external&signature=1a6ebcde80aeb6dc15c7d3f874a3a749da952c0b127e2197a259806d2e4969de"></video>
+            <video id="Thumbs_Up_Blue_Box" autoplay loop="true" src="https://player.vimeo.com/progressive_redirect/playback/708030130/rendition/360p/file.mp4?loc=external&signature=ef73e945a8d7b97471a315b40a3e9153364277c402f5ca49aa01cbe967b88feb"></video>
+            <video id="What_Happens_When_People_Visit" autoplay loop="true" src="https://player.vimeo.com/progressive_redirect/playback/708030162/rendition/360p/file.mp4?loc=external&signature=3f0d90e4c2aa5c06ceade6b3f54a948bb8e64095565121abd1a05fe35513a7bb"></video>
+            <video id="Fuzzy_Wobble" autoplay loop="true" src="https://player.vimeo.com/progressive_redirect/playback/708486077/rendition/360p/file.mp4?loc=external&signature=ad086d4c6f09e9224b1721b5e99e6a3cafa135612430b14bf11e176ce1d41651"></video>
+
+
+        </a-assets>
+
+        <!-- these are our entities! -->
+        <a-entity
+            geometry="primitive: box";
+            width="1";
+            height="1"
+        ></a-entity>
+
+        <a-entity material="shader: flat; src: #Fuzzy_Wobble"
+            geometry="primitive: plane; width: 200; height: 200;"
+            position="0 0 -250"
+            rotation="0 0 0"
+            play-on-click
+            visible="true">
+        </a-entity>
+
+        <a-entity material="shader: flat; src: #No_Demons_In_This_House"
+            geometry="primitive: plane; width: 200; height: 200;"
+            position="-200 0 -250"
+            rotation="0 0 0"
+            play-on-click
+            visible="true">
+        </a-entity>
+
+        <a-entity material="shader: flat; src: #Thumbs_Up_Blue_Box"
+            geometry="primitive: plane; width: 200; height: 200;"
+            position="200 0 -250"
+            rotation="0 0 0"
+            play-on-click
+            visible="true">
+        </a-entity>
+
+
+        <a-entity material="shader: flat; src: #Sheltering_From_A_Tornado"
+            geometry="primitive: plane; width: 200; height: 200;"
+            position="0 200 -250"
+            rotation="0 0 0"
+            play-on-click
+            visible="true">
+        </a-entity>
+
+        <a-entity material="shader: flat; src: #Stuck_In_Food_Somewhere"
+            geometry="primitive: plane; width: 200; height: 200;"
+            position="-200 200 -250"
+            rotation="0 0 0"
+            play-on-click
+            visible="true">
+        </a-entity>
+
+        <a-entity material="shader: flat; src: #What_Happens_When_People_Visit"
+            geometry="primitive: plane; width: 200; height: 200;"
+            position="200 200 -250"
+            rotation="0 0 0"
+            play-on-click
+            visible="true">
+        </a-entity>
+
+        
+        <a-box
+            position="2 0 0"
+            color="red"
+        ></a-box>
+
+        <!-- this is our camera -->
+        <a-entity camera look-controls wasd-controls position="0 1 5" acceleration="25"></a-entity>
+    </a-scene>
+    
+</body>
+</html>
