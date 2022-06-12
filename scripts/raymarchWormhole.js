@@ -126,9 +126,9 @@ function initDatGui() {
 
 function preload() {
     imageDivider = new ImageDivider();
-    raymarchHelper = new ScreenShaderHelper('/shaders/raymarch.vert', '/shaders/raymarch.frag');
+    raymarchHelper = new ScreenShaderHelper('tags-CCI-2022-1/shaders/raymarch.vert', 'tags-CCI-2022-1/shaders/raymarch.frag');
     cameraControls = new CameraControlHelper();
-    cohortTexture = loadImage('/fullCohort.jpg');
+    cohortTexture = loadImage('tags-CCI-2022-1/fullCohort.jpg');
 }
 
 function setup() {
