@@ -126,9 +126,9 @@ function initDatGui() {
 
 function preload() {
     imageDivider = new ImageDivider();
-    raymarchHelper = new ScreenShaderHelper('/shaders/raymarch.vert', '/shaders/raymarch.frag');
+    raymarchHelper = new ScreenShaderHelper('../shaders/raymarch.vert', '../shaders/raymarch.frag');
     cameraControls = new CameraControlHelper();
-    cohortTexture = loadImage('/fullCohort.jpg');
+    cohortTexture = loadImage('../fullCohort.jpg');
 }
 
 function setup() {
