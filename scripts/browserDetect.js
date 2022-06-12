@@ -14,13 +14,13 @@ let IS_SAFARI = /constructor/i.test(window.HTMLElement) || (function (p) { retur
 let IS_IE = /*@cc_on!@*/false || !!document.documentMode;
 
 // Edge 20+
-let IS_EDGE = !isIE && !!window.StyleMedia;
+let IS_EDGE = !IS_IE && !!window.StyleMedia;
 
 // Chrome 1 - 79
 let IS_CHROME = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
 
 // Edge (based on chromium) detection
-let IS_EDGE_CHROMIUM = isChrome && (navigator.userAgent.indexOf("Edg") != -1);
+let IS_EDGE_CHROMIUM = IS_CHROME && (navigator.userAgent.indexOf("Edg") != -1);
 
 // Blink engine detection
-let IS_BLINK = (isChrome || isOpera) && !!window.CSS;
+let IS_BLINK = (IS_CHROME || IS_OPERA) && !!window.CSS;
